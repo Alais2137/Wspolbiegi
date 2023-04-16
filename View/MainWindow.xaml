@@ -4,9 +4,38 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:View"
+        xmlns:vm="clr-namespace:ViewModel;assembly=ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Ballz" Height="800" Width="600">
+    <Window.DataContext>
+        <vm:MainWindowViewModel/>
+    </Window.DataContext>
     <Grid>
+        <Border Width="504" Height="504" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0, 50" BorderBrush="Black" Background="AliceBlue" BorderThickness="2, 2, 2, 2">
+            <Viewbox>
+                <ItemsControl x:Name="control" ItemsSource="{Binding ObsCollBall, Mode=OneWay}">
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="ContentPresenter">
+                            <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                            <Setter Property="Canvas.Bottom" Value="{Binding Y}"/>
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Ellipse Fill="Blue" Width="{Binding Diameter}" Height="{Binding Diameter}"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas x:Name="ballsPlane" Height="500" Width="500" HorizontalAlignment="Center"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </Viewbox>
+        </Border>
 
+        <TextBox x:Name="numberOfBalls" Text="{Binding numberOfBalls, Mode = TwoWay, UpdateSourceTrigger = PropertyChanged}" HorizontalAlignment="Left" Margin="100,550,0,0" TextWrapping="Wrap" FontSize="25" Width="150" Height="40"/>
+        <Button x:Name="apply" Command="{Binding Apply}" Content="Apply" HorizontalAlignment="Left" Margin="350,550,0,0" Width="70" Height="40"/>
+        <Button x:Name="start" Command="{Binding Start}" Content="Start" HorizontalAlignment="Left" Margin="450,550,0,0" Width="70" Height="40"/>
     </Grid>
 </Window>
