@@ -9,8 +9,6 @@ namespace ViewModel
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
-
-
         private LogicAPI _logicAPI;
 
         public ICommand Apply { get; set; }
