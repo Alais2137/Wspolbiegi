@@ -1,4 +1,5 @@
 ﻿using Data;
+using Model;
 using System.Collections.ObjectModel;
 using System.Drawing;
 
@@ -11,10 +12,11 @@ namespace Logic
             return new BallManager();
         }
 
-        public abstract ObservableCollection<Ball> getCollection();
+        public abstract ObservableCollection<BallModel> getCollection();
         public abstract void CreateBall(int numberOfBalls);
-        public abstract void MoveBall(Ball ball, double numberOfFrames, double duration, PointF vector);
-        public abstract PointF FindNewBallPosition(Ball ball, int numberOfFrames);
-        public abstract void BallsMovement();
+        public abstract void BounceBall(DataAPI ball1, DataAPI ball2);
+        public abstract void CollisionsObserver(ObservableCollection<DataAPI> balls);
+        public abstract void MoveBall(DataAPI ball);
+        public abstract Task BallsMovement();
     }
 }

@@ -1,38 +1,53 @@
 ﻿using System.ComponentModel;
+using System.Drawing;
 using System.Runtime.CompilerServices;
 
 namespace Data
 {
-    public class Ball : INotifyPropertyChanged
+    public class Ball : DataAPI, INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
+        public override event PropertyChangedEventHandler? PropertyChanged;
+        protected override void RaisePropertyChanged([CallerMemberName] string propertyName = null)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         private double _x;
         private double _y;
-        public double X
+        public override double X
         {
             get { return _x; }
             set { _x = value; RaisePropertyChanged("X"); }
         }
-        public double Y
+        public override double Y
         {
             get { return _y; }
             set { _y = value; RaisePropertyChanged("Y"); }
         }
-        public double Diameter { get; private set; }
-        public double DestinationPlaneX { get; set; }
-        public double DestinationPlaneY { get; set; }
-
-        public Ball(double x, double y, double diameter, double destinationPlaneX, double destinationPlaneY)
+        private object lockObject = new object();
+        private bool _canMove = true;
+        public override int Diameter { get; set; }
+        public override double Mass { get; set; }
+        public override PointF Vector { get; set; }
+        public override double Speed { get; set; }
+        public override void UpdateMovement(PointF vector, double speed)
+        {
+            _canMove = false;
+            // sekcja krytyczna - tylko 1 watek na raz moze wykonac te logike
+            lock (lockObject)
+            {
+                Vector = vector;
+                Speed = speed;
+            }
+            _canMove = true;
+        }
+        public Ball(double x, double y, int diameter, double mass, PointF vector, double speed)
         {
             this.X = x;
             this.Y = y;
             this.Diameter = diameter;
-            this.DestinationPlaneX = destinationPlaneX;
-            this.DestinationPlaneY = destinationPlaneY;
+            this.Mass = mass;
+            this.Vector = vector;
+            this.Speed = speed;
         }
     }
 }
