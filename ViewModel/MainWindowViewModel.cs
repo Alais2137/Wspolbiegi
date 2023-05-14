@@ -1,4 +1,4 @@
-using Data;
+using Model;
 using Logic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -13,7 +13,7 @@ namespace ViewModel
 
         public ICommand Apply { get; set; }
         public ICommand Start { get; set; }
-        public ObservableCollection<Ball> ObsCollBall => _logicAPI.getCollection();
+        public ObservableCollection<BallModel> ObsCollBall => _logicAPI.getCollection();
 
         public MainWindowViewModel()
         {
