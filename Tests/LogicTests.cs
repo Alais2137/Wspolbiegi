@@ -1,21 +1,42 @@
+using Data;
 using Logic;
+using System.Drawing;
 
 namespace TestProject_PW
 {
     [TestClass]
-    public class LogicDataTests
+    public class LogicTests
     {
         [TestMethod]
         public void IsBallMovedTest()
         {
             LogicAPI ballManager = LogicAPI.CreateAPI();
             ballManager.CreateBall(1);
-            double tmp_x = ballManager.getCollection()[0].X;
-            double tmp_y = ballManager.getCollection()[0].Y;
-            ballManager.MoveBall(ballManager.getCollection()[0], 5, 3, new System.Drawing.PointF(10, 10));
 
-            Assert.AreNotEqual(ballManager.getCollection()[0].X, tmp_x);
-            Assert.AreNotEqual(ballManager.getCollection()[0].Y, tmp_y);
+            DataAPI ball = new Ball(100, 200, 5, 25, new PointF(2, 2), 5);
+            double tmp_x = ball.X;
+            double tmp_y = ball.Y;
+
+            ballManager.MoveBall(ball);
+
+            Assert.AreNotEqual(ball.X, tmp_x);
+            Assert.AreNotEqual(ball.Y, tmp_y);
+        }
+
+        [TestMethod]
+        public void BallDirectionTest()
+        {
+            LogicAPI ballManager = LogicAPI.CreateAPI();
+            ballManager.CreateBall(1);
+
+            DataAPI ball = new Ball(100, 200, 5, 25, new PointF(2, 2), 5);
+            double tmp_x = ball.X;
+            double tmp_y = ball.Y;
+
+            ballManager.MoveBall(ball);
+
+            Assert.AreEqual(ball.X, 102);
+            Assert.AreEqual(ball.Y, 202);
         }
 
         [TestMethod]

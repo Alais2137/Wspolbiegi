@@ -22,19 +22,19 @@ namespace Logic
             {
                 int diameter = random.Next(10, 50);
                 double speed = random.Next(50, 100)/diameter;
-                PointF vector = new PointF(random.Next(-5, 5)*(float)speed, random.Next(-5, 5)*(float)speed);
+                PointF vector = new PointF((float)((-1 + 2 * random.NextDouble())*speed), (float)((-1 + 2 * random.NextDouble()) * speed));
                 Ball ball = new(random.Next(500 - diameter), random.Next(500 - diameter), diameter, diameter*diameter, vector, speed);
                 _balls.Add(ball);
                 _ballsModel.Add(new BallModel(ball.X, ball.Y, ball.Diameter));
             }
         }
-        public override void CollisionsObserver(ObservableCollection<DataAPI> balls) // czy pilka zderza sie z inna pilka
+        public override void CollisionsObserver(ObservableCollection<DataAPI> balls)
         {
             double distanceX;
             double distanceY;
 
             Dictionary<(int, int), bool> bouncesDict = new Dictionary<(int, int), bool>();
-            // na poczatku nie mamy zadnych zarejestrowanych odbic - wrzucamy wszedzie false, zeby nam potem nie krzyczal, że Key does not exist
+
             for (int i = 0; i < balls.Count; i++)
             {
                 for (int j = i + 1; j < balls.Count; j++)
@@ -43,7 +43,7 @@ namespace Logic
                 }
             }
 
-            while (true) // wykrywamy zderzenia przez caly czas dzialania programu
+            while (_balls.Count != 0) 
             {
                 UpdateBallsModel();
 
@@ -55,19 +55,18 @@ namespace Logic
                         distanceY = balls[i].Y - balls[j].Y;
                         if (Math.Sqrt(distanceX * distanceX + distanceY * distanceY) <= balls[i].Diameter/2 + balls[j].Diameter/2)
                         {
-                            // jezeli obsluzylismy juz odbicie dla tej pary kulek, to pomijamy Bounce
+
                             if (bouncesDict[(i, j)]) continue;
 
-                            //Console.WriteLine($"COLLISION DETECTED between:\n{balls[i].Details}\nand\n\n{balls[j].Details}\n");
                             BounceBall(balls[i], balls[j]);
-                            bouncesDict[(i, j)] = true; // jezeli zrobilismy Bounce, to ustawiamy flage na true, zeby wiedziec, ze to odbicie juz zostalo obsluzone
+                            bouncesDict[(i, j)] = true; 
                         }
-                        else bouncesDict[(i, j)] = false; // jezeli kulki sie nie stykaja to ustawiamy flage na false, zeby bylo mozna obsluzyc kolejne zderzenie dla tej pary kulek
+                        else bouncesDict[(i, j)] = false; 
                     }
                 }
             }
         }
-        public override void BounceBall(DataAPI ball1, DataAPI ball2)  // odbijanie pilek od pilek
+        public override void BounceBall(DataAPI ball1, DataAPI ball2) 
         {
             PointF tmp = ball1.Vector;
             double temp = ball1.Speed + ((2 * ball2.Mass) / (ball1.Mass + ball2.Mass));
@@ -84,15 +83,11 @@ namespace Logic
         }
         private void UpdateBallsModel()
         {
-            if (_balls != null)
+            for (int i = 0; i < _balls.Count; i++)
             {
-                for (int i = 0; i < _balls.Count; i++)
-                {
-                    var ball = _balls[i];
-                    _ballsModel[i].Update(ball.X, ball.Y, ball.Diameter);
-                }
+                var ball = _balls[i];
+                _ballsModel[i].Update(ball.X, ball.Y, ball.Diameter);
             }
-
         }
 
         public override async Task BallsMovement()
@@ -126,7 +121,6 @@ namespace Logic
             }
             Task ballCollisions = new Task(() => CollisionsObserver(_balls));
             ballCollisions.Start();
-
         }
     }
 }
