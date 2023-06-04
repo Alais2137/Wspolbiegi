@@ -8,6 +8,10 @@ namespace Data
     {
         public abstract event PropertyChangedEventHandler? PropertyChanged;
         protected abstract void RaisePropertyChanged([CallerMemberName] string propertyName = null);
+        public abstract int Id
+        {
+            get;
+        }
         public abstract double X
         {
             get; set;

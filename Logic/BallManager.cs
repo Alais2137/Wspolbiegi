@@ -8,22 +8,27 @@ namespace Logic
     public class BallManager : LogicAPI
     {
         private ObservableCollection<DataAPI> _balls = new();
-        public ObservableCollection<DataAPI> Balls => _balls;
 
         private ObservableCollection<BallModel> _ballsModel = new();
         public override ObservableCollection<BallModel> getCollection() { return _ballsModel; }
 
+        private Logger? _logger;
+
         public override void CreateBall(int numberOfBalls)
         {
+            
+            if (File.Exists(@"..\..\..\..\..\logs.json"))
+                File.Delete(@"..\..\..\..\..\logs.json");
             _balls.Clear();
             _ballsModel.Clear();
-            Random random = new Random();
+            _logger = new Logger();
+            Random random = new();
             for (int i = 0; i < numberOfBalls; i++)
             {
                 int diameter = random.Next(10, 50);
                 double speed = random.Next(50, 100)/diameter;
-                PointF vector = new PointF((float)((-1 + 2 * random.NextDouble())*speed), (float)((-1 + 2 * random.NextDouble()) * speed));
-                Ball ball = new(random.Next(500 - diameter), random.Next(500 - diameter), diameter, diameter*diameter, vector, speed);
+                PointF vector = new((float)((-1 + 2 * random.NextDouble())*speed), (float)((-1 + 2 * random.NextDouble()) * speed));
+                Ball ball = new(i, random.Next(500 - diameter), random.Next(500 - diameter), diameter, diameter*diameter, vector, speed);
                 _balls.Add(ball);
                 _ballsModel.Add(new BallModel(ball.X, ball.Y, ball.Diameter));
             }
@@ -51,8 +56,8 @@ namespace Logic
                 {
                     for (int j = i + 1; j < balls.Count; j++)
                     {
-                        distanceX = balls[i].X - balls[j].X;
-                        distanceY = balls[i].Y - balls[j].Y;
+                        distanceX = (balls[i].X + balls[i].Diameter/2) - (balls[j].X + balls[j].Diameter/2);
+                        distanceY = (balls[i].Y + balls[i].Diameter/2) - (balls[j].Y + balls[j].Diameter / 2);
                         if (Math.Sqrt(distanceX * distanceX + distanceY * distanceY) <= balls[i].Diameter/2 + balls[j].Diameter/2)
                         {
 
@@ -79,6 +84,7 @@ namespace Logic
         {
             ball.X += ball.Vector.X;
             ball.Y += ball.Vector.Y;
+            _logger.SaveLogsToFile(ball);
             Thread.Sleep(10);
         }
         private void UpdateBallsModel()
