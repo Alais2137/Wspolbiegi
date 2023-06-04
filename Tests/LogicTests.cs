@@ -30,8 +30,6 @@ namespace TestProject_PW
             ballManager.CreateBall(1);
 
             DataAPI ball = new Ball(100, 200, 5, 25, new PointF(2, 2), 5);
-            double tmp_x = ball.X;
-            double tmp_y = ball.Y;
 
             ballManager.MoveBall(ball);
 
