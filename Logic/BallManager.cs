@@ -16,12 +16,11 @@ namespace Logic
 
         public override void CreateBall(int numberOfBalls)
         {
-            
+
             if (File.Exists(@"..\..\..\..\..\logs.json"))
                 File.Delete(@"..\..\..\..\..\logs.json");
             _balls.Clear();
             _ballsModel.Clear();
-            _logger = new Logger();
             Random random = new();
             for (int i = 0; i < numberOfBalls; i++)
             {
@@ -32,6 +31,7 @@ namespace Logic
                 _balls.Add(ball);
                 _ballsModel.Add(new BallModel(ball.X, ball.Y, ball.Diameter));
             }
+            _logger = new Logger(_balls);
         }
         public override void CollisionsObserver(ObservableCollection<DataAPI> balls)
         {
@@ -84,7 +84,6 @@ namespace Logic
         {
             ball.X += ball.Vector.X;
             ball.Y += ball.Vector.Y;
-            _logger.SaveLogsToFile(ball);
             Thread.Sleep(10);
         }
         private void UpdateBallsModel()
